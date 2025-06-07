@@ -1,5 +1,7 @@
 package ubb.victors3136.epigraphmobile.theme
 
+import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 
@@ -23,10 +25,10 @@ private object DarkTheme : Theme {
     override fun accentColor(): Color = Color(0xFF006058)
 }
 
-private object LightTheme: Theme {
-    override fun primaryBg(): Color  = Color(0xFFCFD8DC)
+private object LightTheme : Theme {
+    override fun primaryBg(): Color = Color(0xFFCFD8DC)
 
-    override fun secondaryBg(): Color  = Color(0xFF248EBD)
+    override fun secondaryBg(): Color = Color(0xFF248EBD)
 
     override fun primaryText(): Color = Color(0xFF212121)
 
@@ -37,9 +39,9 @@ private object LightTheme: Theme {
 
 object ThemeProvider {
 
-    private var darkMode = mutableStateOf(false);
+    private var darkMode = mutableStateOf(true)
 
-    fun get() : Theme = if(darkMode.value) DarkTheme else LightTheme
+    fun get(): Theme = if (darkMode.value) DarkTheme else LightTheme
 
     fun toggle() {
         darkMode.value = !darkMode.value
