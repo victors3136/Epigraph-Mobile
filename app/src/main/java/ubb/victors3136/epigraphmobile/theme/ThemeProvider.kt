@@ -1,7 +1,5 @@
 package ubb.victors3136.epigraphmobile.theme
 
-import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 
@@ -10,7 +8,8 @@ interface Theme {
     fun secondaryBg(): Color
     fun primaryText(): Color
     fun secondaryText(): Color
-    fun accentColor(): Color
+    fun primaryAccent(): Color
+    fun secondaryAccent(): Color
 }
 
 private object DarkTheme : Theme {
@@ -22,7 +21,9 @@ private object DarkTheme : Theme {
 
     override fun secondaryText(): Color = Color(0xFF757575)
 
-    override fun accentColor(): Color = Color(0xFF006058)
+    override fun primaryAccent(): Color = Color(0xFF006058)
+
+    override fun secondaryAccent(): Color = Color(0xFF00603E)
 }
 
 private object LightTheme : Theme {
@@ -34,7 +35,9 @@ private object LightTheme : Theme {
 
     override fun secondaryText(): Color = Color(0xFF3D3D3D)
 
-    override fun accentColor(): Color = Color(0xFF009688)
+    override fun primaryAccent(): Color = Color(0xFF009688)
+
+    override fun secondaryAccent(): Color = Color(0xFF00965A)
 }
 
 object ThemeProvider {
