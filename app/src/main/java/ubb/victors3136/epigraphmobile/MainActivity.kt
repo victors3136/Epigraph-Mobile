@@ -13,7 +13,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,10 +26,10 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -46,7 +45,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -265,7 +263,7 @@ fun HomeScreen(navController: NavHostController) {
 
 @Composable
 fun BackButton(navController: NavHostController) {
-    EpigraphButton("Back") { navController.popBackStack() }
+    EpigraphButton("Back") { navController.popBackStack(route = "home", inclusive = false) }
 }
 
 
@@ -281,15 +279,14 @@ fun EpigraphTextField(value: String, label: String, onChange: (String) -> Unit) 
         colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = ThemeProvider.get().primaryText(),
             focusedBorderColor = ThemeProvider.get().primaryAccent(),
-            focusedLabelColor =  ThemeProvider.get().primaryAccent(),
-            focusedPlaceholderColor =  ThemeProvider.get().primaryText(),
+            focusedLabelColor = ThemeProvider.get().primaryAccent(),
+            focusedPlaceholderColor = ThemeProvider.get().primaryText(),
             unfocusedTextColor = ThemeProvider.get().secondaryText(),
             unfocusedBorderColor = ThemeProvider.get().secondaryAccent(),
-            unfocusedLabelColor =  ThemeProvider.get().secondaryAccent(),
+            unfocusedLabelColor = ThemeProvider.get().secondaryAccent(),
             unfocusedPlaceholderColor = ThemeProvider.get().secondaryText(),
             cursorColor = ThemeProvider.get().primaryAccent(),
-
-            )
+        )
     )
 }
 
@@ -305,7 +302,7 @@ fun EpigraphCheckbox(
         Checkbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            colors = androidx.compose.material3.CheckboxDefaults.colors(
+            colors = CheckboxDefaults.colors(
                 checkedColor = ThemeProvider.get().primaryAccent(),
                 uncheckedColor = ThemeProvider.get().secondaryAccent(),
                 checkmarkColor = ThemeProvider.get().primaryText()
@@ -330,6 +327,7 @@ fun UserInfoFormScreen(navController: NavHostController) {
                 EpigraphButton("Submit") {
                     if (age.isNotEmpty() && gender.isNotEmpty()) {
                         Toast.makeText(context, "Data submitted!", Toast.LENGTH_SHORT).show()
+                        // TODO save data somewhere
                         navController.popBackStack()
                     } else {
                         Toast.makeText(

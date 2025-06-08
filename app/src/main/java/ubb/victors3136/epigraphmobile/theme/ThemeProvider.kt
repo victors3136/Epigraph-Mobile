@@ -13,7 +13,7 @@ interface Theme {
 }
 
 private object DarkTheme : Theme {
-    override fun primaryBg(): Color = Color(0xFF455A64)
+    override fun primaryBg(): Color = Color(0xFF2C393F)
 
     override fun secondaryBg(): Color = Color(0xFF1A475D)
 
@@ -27,7 +27,7 @@ private object DarkTheme : Theme {
 }
 
 private object LightTheme : Theme {
-    override fun primaryBg(): Color = Color(0xFFCFD8DC)
+    override fun primaryBg(): Color = Color(0xFFB2C4CC)
 
     override fun secondaryBg(): Color = Color(0xFF248EBD)
 
