@@ -8,17 +8,14 @@ import androidx.compose.ui.text.TextStyle
 import ubb.victors3136.epigraphmobile.ui.ThemeProvider
 
 @Composable
-fun EpigraphTextBox(
+fun EpigraphErrorBox(
     text: String,
-    modifier: Modifier = Modifier,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
-    primary: Boolean = true,
-) {
+    modifier: Modifier = Modifier.Companion,
+    style: TextStyle = MaterialTheme.typography.bodyMedium){
     Text(
         text = text,
         modifier = modifier,
-        color = if (primary) ThemeProvider.get().primaryText()
-        else ThemeProvider.get().secondaryText(),
+        color = ThemeProvider.get().redNuance(),
         style = style,
     )
 }

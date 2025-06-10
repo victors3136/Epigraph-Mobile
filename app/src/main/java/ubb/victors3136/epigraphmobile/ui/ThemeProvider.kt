@@ -10,7 +10,7 @@ interface Theme {
     fun secondaryText(): Color
     fun primaryAccent(): Color
     fun secondaryAccent(): Color
-    fun recordButtonColor(): Color
+    fun redNuance(): Color
 }
 
 private object DarkTheme : Theme {
@@ -26,7 +26,7 @@ private object DarkTheme : Theme {
 
     override fun secondaryAccent(): Color = Color(0xFF00603E)
 
-    override fun recordButtonColor(): Color = Color.Red
+    override fun redNuance(): Color = Color.Red
 }
 
 private object LightTheme : Theme {
@@ -42,7 +42,7 @@ private object LightTheme : Theme {
 
     override fun secondaryAccent(): Color = Color(0xFF00965A)
 
-    override fun recordButtonColor(): Color = Color(0xFF940000)
+    override fun redNuance(): Color = Color(0xFF940000)
 }
 enum class ThemeMode {
     DARK,

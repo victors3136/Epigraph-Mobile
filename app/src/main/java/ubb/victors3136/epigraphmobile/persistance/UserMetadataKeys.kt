@@ -24,9 +24,9 @@ suspend fun saveUserInfo(context: Context, age: Int, gender: String, consent: Bo
     }
 }
 
-suspend fun loadUserInfo(context: Context): Triple<Int, String, Boolean> {
+suspend fun loadUserInfo(context: Context): Triple<Int?, String, Boolean> {
     val preferences = context.userDataStore.data.first()
-    val age = preferences[UserMetadataKeys.AGE] ?: -1
+    val age = preferences[UserMetadataKeys.AGE]
     val gender = preferences[UserMetadataKeys.GENDER] ?: ""
     val consent = preferences[UserMetadataKeys.CONSENT] == true
     return Triple(age, gender, consent)

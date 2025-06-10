@@ -9,9 +9,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import ubb.victors3136.epigraphmobile.ui.components.EpigraphErrorBox
 import ubb.victors3136.epigraphmobile.ui.components.EpigraphTextBox
 
 @Composable
@@ -40,6 +42,6 @@ fun RecordButtonWithPermissions() {
     if (permissionGranted) {
         RecordAudioButton(context)
     } else {
-        EpigraphTextBox("Microphone permission required.")
+        EpigraphErrorBox("Microphone permission required.")
     }
 }

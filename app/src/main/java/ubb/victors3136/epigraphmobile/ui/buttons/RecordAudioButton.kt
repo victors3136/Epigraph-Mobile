@@ -49,7 +49,7 @@ fun RecordAudioButton(context: Context) {
 
     if (isRecording && showSaveCancel) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            EpigraphButton(Icons.Filled.Square, "Stop", ThemeProvider.get().recordButtonColor()) {
+            EpigraphButton(Icons.Filled.Square, "Stop", ThemeProvider.get().redNuance()) {
                 recorder.reset()
                 isRecording = false
                 showSaveCancel = false
@@ -66,7 +66,7 @@ fun RecordAudioButton(context: Context) {
             }
         }
     } else {
-        EpigraphButton(Icons.Filled.Circle, "Record", ThemeProvider.get().recordButtonColor()) {
+        EpigraphButton(Icons.Filled.Circle, "Record", ThemeProvider.get().redNuance()) {
             runCatching {
                 recorder.apply {
                     setAudioSource(MediaRecorder.AudioSource.MIC)
