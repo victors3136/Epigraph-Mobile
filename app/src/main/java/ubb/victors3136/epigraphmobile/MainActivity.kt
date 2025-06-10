@@ -26,16 +26,15 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowLeft
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Nightlight
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Square
-import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -61,13 +60,23 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import ubb.victors3136.epigraphmobile.theme.ThemeMode
 import ubb.victors3136.epigraphmobile.theme.ThemeProvider
 
@@ -322,6 +331,36 @@ fun BackButton(navController: NavHostController) {
     ) { navController.popBackStack(route = "home", inclusive = false) }
 }
 
+@Composable
+fun EpigraphIntField(value: String,
+                     label: String,
+                     onChange: (String) -> Unit
+){
+    OutlinedTextField(
+        value = value,
+        onValueChange = { newValue: String ->
+            if (newValue.all { it.isDigit() }) {
+                onChange(newValue)
+            }
+        },
+        label = { EpigraphTextBox(label) },
+        textStyle = MaterialTheme.typography.bodyMedium.copy(
+            color = ThemeProvider.get().primaryText()
+        ),
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = ThemeProvider.get().primaryText(),
+            focusedBorderColor = ThemeProvider.get().primaryAccent(),
+            focusedLabelColor = ThemeProvider.get().primaryAccent(),
+            focusedPlaceholderColor = ThemeProvider.get().primaryText(),
+            unfocusedTextColor = ThemeProvider.get().secondaryText(),
+            unfocusedBorderColor = ThemeProvider.get().secondaryAccent(),
+            unfocusedLabelColor = ThemeProvider.get().secondaryAccent(),
+            unfocusedPlaceholderColor = ThemeProvider.get().secondaryText(),
+            cursorColor = ThemeProvider.get().primaryAccent(),
+        )
+    )
+}
 
 @Composable
 fun EpigraphTextField(value: String, label: String, onChange: (String) -> Unit) {
@@ -369,12 +408,42 @@ fun EpigraphCheckbox(
     }
 }
 
+object UserMetadataKeys {
+    val AGE = intPreferencesKey("user_age")
+    val GENDER = stringPreferencesKey("user_gender")
+    val CONSENT = booleanPreferencesKey("user_consent")
+}
+
+val Context.userDataStore by preferencesDataStore(name = "user_info")
+
+suspend fun saveUserInfo(context: Context, age: Int, gender: String, consent: Boolean) {
+    context.userDataStore.edit { preferences ->
+        preferences[UserMetadataKeys.AGE] = age
+        preferences[UserMetadataKeys.GENDER] = gender
+        preferences[UserMetadataKeys.CONSENT] = consent
+    }
+}
+
+suspend fun loadUserInfo(context: Context): Triple<Int, String, Boolean> {
+    val preferences = context.userDataStore.data.first()
+    val age = preferences[UserMetadataKeys.AGE] ?: -1
+    val gender = preferences[UserMetadataKeys.GENDER] ?: ""
+    val consent = preferences[UserMetadataKeys.CONSENT] == true
+    return Triple(age, gender, consent)
+}
 @Composable
 fun UserInfoFormScreen(navController: NavHostController) {
     val context = LocalContext.current
     var age by remember { mutableStateOf("") }
     var gender by remember { mutableStateOf("") }
     var consent by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        val (cachedAge, cachedGender, cachedConsent) = loadUserInfo(context)
+        age = cachedAge.toString()
+        gender = cachedGender
+        consent = cachedConsent
+    }
 
     Scaffold(
         topBar = { EpigraphHeader("User Info") },
@@ -385,9 +454,12 @@ fun UserInfoFormScreen(navController: NavHostController) {
                 },
                 {
                     EpigraphButton(Icons.Filled.Done, "Submit") {
-                        if (age.isNotEmpty() && gender.isNotEmpty()) {
+                        val ageInt = age.toIntOrNull()
+                        if (ageInt != null && ageInt >= 0 && gender.isNotEmpty()) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                saveUserInfo(context, ageInt, gender, consent)
+                            }
                             Toast.makeText(context, "Data submitted!", Toast.LENGTH_SHORT).show()
-                            // TODO save data somewhere
                             navController.popBackStack()
                         } else {
                             Toast.makeText(
@@ -410,9 +482,7 @@ fun UserInfoFormScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 EpigraphTextBox("Please fill in your information:")
-                EpigraphTextField(age, "Age") {
-                    if (it.all { character -> character.isDigit() }) age = it
-                }
+                EpigraphIntField(age, "Age") { age = it }
                 EpigraphTextField(gender, "Gender") { gender = it }
                 EpigraphCheckbox(consent, "I consent to my data being stored") { consent = it }
             }
