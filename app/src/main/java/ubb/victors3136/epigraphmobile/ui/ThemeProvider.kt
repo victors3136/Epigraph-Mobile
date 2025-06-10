@@ -1,4 +1,4 @@
-package ubb.victors3136.epigraphmobile.theme
+package ubb.victors3136.epigraphmobile.ui
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color

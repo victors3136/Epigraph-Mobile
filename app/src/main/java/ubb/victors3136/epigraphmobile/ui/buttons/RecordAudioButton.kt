@@ -1,4 +1,4 @@
-package ubb.victors3136.epigraphmobile
+package ubb.victors3136.epigraphmobile.ui.buttons
 
 import android.content.Context
 import android.media.MediaPlayer
@@ -17,7 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
-import ubb.victors3136.epigraphmobile.theme.ThemeProvider
+import ubb.victors3136.epigraphmobile.ui.ThemeProvider
 
 @Composable
 fun RecordAudioButton(context: Context) {

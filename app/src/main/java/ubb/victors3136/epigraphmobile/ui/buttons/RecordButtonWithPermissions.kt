@@ -1,4 +1,4 @@
-package ubb.victors3136.epigraphmobile
+package ubb.victors3136.epigraphmobile.ui.buttons
 
 import android.Manifest
 import android.app.Activity
@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import ubb.victors3136.epigraphmobile.ui.components.EpigraphTextBox
 
 @Composable
 fun RecordButtonWithPermissions() {

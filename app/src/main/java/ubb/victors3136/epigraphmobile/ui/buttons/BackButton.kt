@@ -1,4 +1,4 @@
-package ubb.victors3136.epigraphmobile
+package ubb.victors3136.epigraphmobile.ui.buttons
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowLeft
@@ -10,5 +10,5 @@ fun BackButton(navController: NavHostController) {
     EpigraphButton(
         Icons.AutoMirrored.Filled.ArrowLeft,
         "Back"
-    ) { navController.popBackStack(route = "home", inclusive = false) }
+    ) { navController.popBackStack(route = "recorder", inclusive = false) }
 }

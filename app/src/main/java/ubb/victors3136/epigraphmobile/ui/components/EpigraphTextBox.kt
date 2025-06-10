@@ -1,11 +1,11 @@
-package ubb.victors3136.epigraphmobile
+package ubb.victors3136.epigraphmobile.ui.components
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import ubb.victors3136.epigraphmobile.theme.ThemeProvider
+import ubb.victors3136.epigraphmobile.ui.ThemeProvider
 
 @Composable
 fun EpigraphTextBox(

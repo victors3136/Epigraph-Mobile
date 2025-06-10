@@ -1,4 +1,4 @@
-package ubb.victors3136.epigraphmobile
+package ubb.victors3136.epigraphmobile.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,9 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import ubb.victors3136.epigraphmobile.ui.buttons.EpigraphButton
+import ubb.victors3136.epigraphmobile.ui.buttons.RecordButtonWithPermissions
+import ubb.victors3136.epigraphmobile.ui.components.EpigraphFooter
+import ubb.victors3136.epigraphmobile.ui.components.EpigraphHeader
+import ubb.victors3136.epigraphmobile.ui.components.EpigraphTextBox
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun AudioRecorderScreen(navController: NavHostController) {
     Scaffold(
         modifier = Modifier.Companion.fillMaxSize(),
         containerColor = Color.Companion.Transparent,
@@ -27,7 +32,7 @@ fun HomeScreen(navController: NavHostController) {
                     EpigraphButton(
                         Icons.Filled.Person,
                         "Data"
-                    ) { navController.navigate("userForm") }
+                    ) { navController.navigate("form") }
                 },
             )
         },

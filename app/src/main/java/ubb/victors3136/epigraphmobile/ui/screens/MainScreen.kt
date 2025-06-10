@@ -1,4 +1,4 @@
-package ubb.victors3136.epigraphmobile
+package ubb.victors3136.epigraphmobile.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,10 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import ubb.victors3136.epigraphmobile.theme.ThemeProvider
+import ubb.victors3136.epigraphmobile.ui.ThemeProvider
 
 @Composable
-fun Main() {
+fun MainScreen() {
     val navController = rememberNavController()
     val backgroundColor = ThemeProvider.get().primaryBg()
 
@@ -21,11 +21,11 @@ fun Main() {
             .background(backgroundColor),
         color = backgroundColor
     ) {
-        NavHost(navController = navController, startDestination = "home") {
-            composable("home") {
-                HomeScreen(navController)
+        NavHost(navController = navController, startDestination = "recorder") {
+            composable("recorder") {
+                AudioRecorderScreen(navController)
             }
-            composable("userForm") {
+            composable("form") {
                 UserInfoFormScreen(navController)
             }
         }

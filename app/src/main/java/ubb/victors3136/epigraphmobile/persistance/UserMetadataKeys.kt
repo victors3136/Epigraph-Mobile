@@ -1,4 +1,4 @@
-package ubb.victors3136.epigraphmobile
+package ubb.victors3136.epigraphmobile.persistance
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
