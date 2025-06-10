@@ -26,10 +26,22 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowLeft
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Nightlight
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Square
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -45,6 +57,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -55,17 +68,46 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ubb.victors3136.epigraphmobile.theme.ThemeMode
 import ubb.victors3136.epigraphmobile.theme.ThemeProvider
 
 @Composable
-fun EpigraphButton(text: String, onClick: () -> Unit = {}) = Button(
-    colors = ButtonDefaults.buttonColors(
-        containerColor = ThemeProvider.get().primaryAccent(),
-        contentColor = Color.White
-    ),
-    content = { Text(text) },
-    onClick = { onClick() }
-)
+fun EpigraphButton(
+    icon: ImageVector,
+    description: String? = null,
+    color: Color = ThemeProvider.get().primaryText(),
+    onClick: () -> Unit = {},
+) {
+    Button(
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
+            contentColor = ThemeProvider.get().primaryText()
+        ),
+        onClick = onClick
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = description ?: "",
+            tint = color
+        )
+    }
+}
+
+@Composable
+fun ThemeButton() {
+    Button(
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
+            contentColor = ThemeProvider.get().primaryText()
+        ),
+        onClick = { ThemeProvider.toggle() }) {
+        Icon(
+            imageVector = getComplementaryIcon(ThemeProvider.mode()),
+            tint = ThemeProvider.get().primaryText(),
+            contentDescription = "Change theme"
+        )
+    }
+}
 
 @Composable
 fun EpigraphTextBox(
@@ -114,13 +156,13 @@ fun RecordAudioButton(context: Context) {
 
     if (isRecording && showSaveCancel) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            EpigraphButton("Cancel") {
+            EpigraphButton(Icons.Filled.Square, "Stop", ThemeProvider.get().recordButtonColor()) {
                 recorder.reset()
                 isRecording = false
                 showSaveCancel = false
             }
 
-            EpigraphButton("Save") {
+            EpigraphButton(Icons.Filled.Save, "Save") {
                 recorder.stop()
                 recorder.reset()
                 isRecording = false
@@ -131,7 +173,7 @@ fun RecordAudioButton(context: Context) {
             }
         }
     } else {
-        EpigraphButton("Record") {
+        EpigraphButton(Icons.Filled.Circle, "Record", ThemeProvider.get().recordButtonColor()) {
             runCatching {
                 recorder.apply {
                     setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -206,6 +248,8 @@ fun EpigraphHeader(text: String) {
                 text = text,
                 style = MaterialTheme.typography.titleLarge
             )
+            Spacer(modifier = Modifier.weight(1f))
+            ThemeButton()
         }
     }
 }
@@ -232,6 +276,11 @@ fun EpigraphFooter(
     }
 }
 
+fun getComplementaryIcon(mode: ThemeMode) = when (mode) {
+    ThemeMode.DARK -> Icons.Filled.WbSunny
+    ThemeMode.LIGHT -> Icons.Filled.Nightlight
+}
+
 @Composable
 fun HomeScreen(navController: NavHostController) {
     Scaffold(
@@ -241,8 +290,12 @@ fun HomeScreen(navController: NavHostController) {
         bottomBar = {
             EpigraphFooter(
                 { RecordButtonWithPermissions() },
-                { EpigraphButton("Data") { navController.navigate("userForm") } },
-                { EpigraphButton("Theme") { ThemeProvider.toggle() } },
+                {
+                    EpigraphButton(
+                        Icons.Filled.Person,
+                        "Data"
+                    ) { navController.navigate("userForm") }
+                },
             )
         },
         content = { innerPadding ->
@@ -263,7 +316,10 @@ fun HomeScreen(navController: NavHostController) {
 
 @Composable
 fun BackButton(navController: NavHostController) {
-    EpigraphButton("Back") { navController.popBackStack(route = "home", inclusive = false) }
+    EpigraphButton(
+        Icons.AutoMirrored.Filled.ArrowLeft,
+        "Back"
+    ) { navController.popBackStack(route = "home", inclusive = false) }
 }
 
 
@@ -323,21 +379,26 @@ fun UserInfoFormScreen(navController: NavHostController) {
     Scaffold(
         topBar = { EpigraphHeader("User Info") },
         bottomBar = {
-            EpigraphFooter({
-                EpigraphButton("Submit") {
-                    if (age.isNotEmpty() && gender.isNotEmpty()) {
-                        Toast.makeText(context, "Data submitted!", Toast.LENGTH_SHORT).show()
-                        // TODO save data somewhere
-                        navController.popBackStack()
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Please complete all fields.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+            EpigraphFooter(
+                {
+                    BackButton(navController)
+                },
+                {
+                    EpigraphButton(Icons.Filled.Done, "Submit") {
+                        if (age.isNotEmpty() && gender.isNotEmpty()) {
+                            Toast.makeText(context, "Data submitted!", Toast.LENGTH_SHORT).show()
+                            // TODO save data somewhere
+                            navController.popBackStack()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Please complete all fields.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                }
-            }, { BackButton(navController) })
+                },
+            )
         },
         containerColor = Color.Transparent,
         content = { innerPadding ->
