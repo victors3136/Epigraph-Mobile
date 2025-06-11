@@ -1,4 +1,4 @@
-package ubb.victors3136.epigraphmobile.ui
+package ubb.victors3136.epigraphmobile.ui.theme
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Nightlight

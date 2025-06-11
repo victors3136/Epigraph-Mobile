@@ -6,7 +6,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import ubb.victors3136.epigraphmobile.ui.ThemeProvider
+import ubb.victors3136.epigraphmobile.ui.theme.ThemeProvider
 
 @Composable
 fun EpigraphButton(

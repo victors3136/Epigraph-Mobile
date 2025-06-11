@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import ubb.victors3136.epigraphmobile.ui.ThemeProvider
+import ubb.victors3136.epigraphmobile.ui.theme.ThemeProvider
 
 @Composable
 fun MainScreen() {

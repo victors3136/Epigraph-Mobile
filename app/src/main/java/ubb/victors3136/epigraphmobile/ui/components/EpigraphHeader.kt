@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import ubb.victors3136.epigraphmobile.R
-import ubb.victors3136.epigraphmobile.ui.ThemeProvider
+import ubb.victors3136.epigraphmobile.ui.theme.ThemeProvider
 import ubb.victors3136.epigraphmobile.ui.buttons.ThemeButton
 
 @Composable

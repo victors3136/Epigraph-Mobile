@@ -6,7 +6,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.input.KeyboardType
-import ubb.victors3136.epigraphmobile.ui.ThemeProvider
+import ubb.victors3136.epigraphmobile.ui.theme.ThemeProvider
 import ubb.victors3136.epigraphmobile.ui.components.EpigraphTextBox
 
 @Composable

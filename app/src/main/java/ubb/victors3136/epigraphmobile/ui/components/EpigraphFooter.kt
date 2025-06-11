@@ -12,11 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ubb.victors3136.epigraphmobile.ui.ThemeProvider
+import ubb.victors3136.epigraphmobile.ui.theme.ThemeProvider
 
 @Composable
 fun EpigraphFooter(
-    vararg buttons: @Composable () -> Unit,
+    vararg buttons: @Composable (() -> Unit)?,
 ) {
     Surface(
         color = ThemeProvider.get().primaryBg(),
@@ -31,7 +31,7 @@ fun EpigraphFooter(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.Companion.CenterVertically
         ) {
-            buttons.forEach { it() }
+            buttons.forEach { if (it != null) it() }
         }
     }
 }

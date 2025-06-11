@@ -5,8 +5,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import ubb.victors3136.epigraphmobile.ui.ThemeProvider
-import ubb.victors3136.epigraphmobile.ui.getComplementaryIcon
+import ubb.victors3136.epigraphmobile.ui.theme.ThemeProvider
+import ubb.victors3136.epigraphmobile.ui.theme.getComplementaryIcon
 
 @Composable
 fun ThemeButton() {
