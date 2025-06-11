@@ -1,7 +1,6 @@
-package ubb.victors3136.epigraphmobile.ui.screens
+package ubb.victors3136.epigraphmobile.ui.animations
 
 import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -22,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableLongState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import ubb.victors3136.epigraphmobile.ui.components.EpigraphTextBox
 import ubb.victors3136.epigraphmobile.ui.theme.ThemeProvider
 
 @Composable
@@ -112,17 +111,15 @@ fun RecordingAnimation(duration: Long) {
             .padding(top = 32.dp),
         horizontalAlignment = Alignment.Companion.CenterHorizontally
     ) {
-        Text(
+        EpigraphTextBox(
             text = "Recording...",
             style = MaterialTheme.typography.titleMedium,
-            color = ThemeProvider.get().primaryText()
         )
 
-        Text(
+        EpigraphTextBox(
             text = formatTime(duration),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.Companion.padding(vertical = 8.dp),
-            color = ThemeProvider.get().primaryText()
         )
         SonogramBars()
     }

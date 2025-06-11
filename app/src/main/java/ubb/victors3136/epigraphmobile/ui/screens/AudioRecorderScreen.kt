@@ -1,13 +1,8 @@
 package ubb.victors3136.epigraphmobile.ui.screens
 
 import android.Manifest
-import android.R
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
-import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,10 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -28,23 +21,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import ubb.victors3136.epigraphmobile.R.*
 import ubb.victors3136.epigraphmobile.network.uploadRecording
+import ubb.victors3136.epigraphmobile.ui.animations.RecordingAnimation
+import ubb.victors3136.epigraphmobile.ui.animations.rememberRecordingTimer
 import ubb.victors3136.epigraphmobile.ui.buttons.DataButton
 import ubb.victors3136.epigraphmobile.ui.buttons.RecordAudioButton
 import ubb.victors3136.epigraphmobile.ui.buttons.SubmitRecordingButton
-import ubb.victors3136.epigraphmobile.ui.components.EpigraphErrorBox
 import ubb.victors3136.epigraphmobile.ui.components.EpigraphFooter
 import ubb.victors3136.epigraphmobile.ui.components.EpigraphHeader
+import ubb.victors3136.epigraphmobile.ui.components.EpigraphLargeTextBox
 import ubb.victors3136.epigraphmobile.ui.components.EpigraphTextBox
 import ubb.victors3136.epigraphmobile.ui.theme.ThemeProvider
 
@@ -61,44 +52,10 @@ fun LoadingAnimation() {
             strokeWidth = 4.dp
         )
         Spacer(modifier = Modifier.height(12.dp))
-        Text(
+        EpigraphTextBox(
             "Uploading...",
             style = MaterialTheme.typography.bodyMedium,
-            color = ThemeProvider.get().primaryText()
         )
-    }
-}
-
-@Composable
-fun UploadResultBox(text: String, isError: Boolean) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(240.dp)
-            .background(Color.Black)
-            .padding(24.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = drawable.logo_96),
-            contentDescription = null,
-            modifier = Modifier
-                .matchParentSize()
-                .alpha(0.15f),
-            contentScale = ContentScale.Crop
-        )
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            if (isError) {
-                EpigraphErrorBox(text)
-            } else {
-                EpigraphTextBox(text)
-            }
-        }
     }
 }
 
@@ -111,7 +68,7 @@ fun AudioRecorderScreen(navController: NavHostController) {
     var uploadError by remember { mutableStateOf<Boolean>(false) }
 
     val context = LocalContext.current
-    var permissionGranted by remember {
+    var recordingPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
                 context,
@@ -119,6 +76,16 @@ fun AudioRecorderScreen(navController: NavHostController) {
             ) == PackageManager.PERMISSION_GRANTED
         )
     }
+    var internetPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.INTERNET
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    fun hasAllRequiredPermissions() = recordingPermission && internetPermission
     val recorder = remember { MediaRecorder(context) }
     var showSaveCancel by remember { mutableStateOf(false) }
     var filePath by remember {
@@ -132,6 +99,8 @@ fun AudioRecorderScreen(navController: NavHostController) {
     fun saveRecording() {
         recorder.stop()
         recorder.reset()
+        uploadError = false
+        uploadResponse = null
         setIsRecording(false)
         showSaveCancel = false
         savedFilePath = filePath
@@ -167,11 +136,21 @@ fun AudioRecorderScreen(navController: NavHostController) {
                     .padding(horizontal = 32.dp, vertical = 36.dp)
                     .fillMaxSize()
             ) {
-                Spacer(modifier = Modifier.Companion.height(16.dp))
+//                Spacer(modifier = Modifier.Companion.height(16.dp))
                 when {
-                    !permissionGranted -> EpigraphErrorBox("You need to enable permissions to use this app")
+                    !hasAllRequiredPermissions() -> EpigraphTextBox(
+                        "You need to enable recording and internet permissions to use this app",
+                        isError = true
+                    )
+
                     isUploading -> LoadingAnimation()
-                    uploadResponse != null -> UploadResultBox(uploadResponse!!, uploadError)
+                    uploadError -> EpigraphLargeTextBox(
+                        uploadResponse ?: "Unknown or unexpected error",
+                        modifier = Modifier.padding(0.dp),
+                        isError = true
+                    )
+
+                    !uploadError && uploadResponse != null -> EpigraphLargeTextBox(uploadResponse!!)
                     isRecording -> RecordingAnimation(duration)
                     else -> EpigraphTextBox("Press the button below to transcribe :D")
                 }
@@ -181,7 +160,7 @@ fun AudioRecorderScreen(navController: NavHostController) {
         },
         bottomBar = {
             EpigraphFooter(
-                if (permissionGranted) {
+                if (recordingPermission) {
                     {
                         RecordAudioButton(
                             context = context,
@@ -190,6 +169,10 @@ fun AudioRecorderScreen(navController: NavHostController) {
                             savedFilePath = filePath,
                             setSavedFilePath = { newPath -> { savedFilePath = newPath } },
                             setRecordingState = setIsRecording,
+                            prepare = {
+                                uploadError = false
+                                uploadResponse = null
+                            }
                         )
                     }
                 } else {

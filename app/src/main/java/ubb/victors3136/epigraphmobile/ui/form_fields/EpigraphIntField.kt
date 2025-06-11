@@ -24,7 +24,7 @@ fun EpigraphIntField(value: String,
             }
         },
         label = { EpigraphTextBox(label) },
-        textStyle = MaterialTheme.typography.bodyMedium.copy(
+        textStyle = MaterialTheme.typography.bodyLarge.copy(
             color = ThemeProvider.get().primaryText()
         ),
         modifier = modifier,

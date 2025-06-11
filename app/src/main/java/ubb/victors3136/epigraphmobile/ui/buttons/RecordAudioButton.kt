@@ -25,6 +25,7 @@ fun RecordAudioButton(
     savedFilePath: String?,
     setSavedFilePath: (String?) -> Unit,
     setRecordingState: (Boolean) -> Unit,
+    prepare: () -> Unit,
 ) {
 
     if (!isRecording && savedFilePath != null) {
@@ -40,6 +41,7 @@ fun RecordAudioButton(
         }
     } else {
         BeginRecordingButton {
+            prepare()
             runCatching {
                 initRecording(recorder, savedFilePath!!)
             }.onSuccess {

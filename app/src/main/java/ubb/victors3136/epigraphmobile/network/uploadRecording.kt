@@ -38,10 +38,10 @@ suspend fun uploadRecording(filePath: String, context: Context): String {
     return withContext(Dispatchers.IO) {
         try {
             client.newCall(request).execute().use { response ->
-                response.body.toString()
+                response.body?.string() ?: "No response body provided"
             }
         } catch (e: Exception) {
-            "Error: $e"
+            "Error: ${e.message}"
         }
     }
 }

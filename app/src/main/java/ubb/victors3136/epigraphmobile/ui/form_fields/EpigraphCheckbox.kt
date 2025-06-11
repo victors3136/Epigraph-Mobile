@@ -33,6 +33,6 @@ fun EpigraphCheckbox(
             )
         )
         Spacer(modifier = Modifier.Companion.width(8.dp))
-        EpigraphTextBox(text = label, primary = true)
+        EpigraphTextBox(text = label)
     }
 }
