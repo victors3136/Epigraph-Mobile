@@ -41,7 +41,7 @@ suspend fun uploadRecording(filePath: String, context: Context): String {
                 response.body.toString()
             }
         } catch (e: Exception) {
-            e.toString()
+            "Error: $e"
         }
     }
 }

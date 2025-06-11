@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import ubb.victors3136.epigraphmobile.R
+import ubb.victors3136.epigraphmobile.R.drawable
 import ubb.victors3136.epigraphmobile.ui.theme.ThemeProvider
 import ubb.victors3136.epigraphmobile.ui.buttons.ThemeButton
 
@@ -36,7 +37,7 @@ fun EpigraphHeader(text: String) {
             )
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo_96),
+                painter = painterResource(id = drawable.logo_96),
                 contentDescription = "Logo",
                 modifier = Modifier.Companion
                     .size(40.dp)
