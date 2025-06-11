@@ -3,6 +3,7 @@ package ubb.victors3136.epigraphmobile.ui.screens
 import android.Manifest
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,6 +50,30 @@ fun AudioRecorderScreen(navController: NavHostController) {
         )
     }
     var savedFilePath by remember { mutableStateOf<String?>(null) }
+    fun saveRecording() {
+        recorder.stop()
+        recorder.reset()
+        setIsRecording(false)
+        showSaveCancel = false
+        savedFilePath = filePath
+        val relativePath = "recording_${System.currentTimeMillis()}.m4a"
+        filePath = "${context.cacheDir.absolutePath}/$relativePath"
+        Toast.makeText(
+            context,
+            "$relativePath saved successfully!",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    val duration by if (isRecording) {
+        rememberRecordingTimer(
+            onMaxReached = {
+                if (isRecording) saveRecording()
+            }
+        )
+    } else {
+        remember { mutableLongStateOf(0L) }
+    }
 
     Scaffold(
         modifier = Modifier.Companion.fillMaxSize(),
@@ -66,7 +92,7 @@ fun AudioRecorderScreen(navController: NavHostController) {
                 } else if (!isRecording) {
                     EpigraphTextBox(text = "Press the button below to transcribe :D")
                 } else {
-                    RecordingAnimation()
+                    RecordingAnimation(duration)
                 }
                 Spacer(modifier = Modifier.Companion.weight(1f))
             }
@@ -83,24 +109,13 @@ fun AudioRecorderScreen(navController: NavHostController) {
                             savedFilePath = filePath,
                             setSavedFilePath = { newPath -> { savedFilePath = newPath } },
                             setRecordingState = setIsRecording,
-
-                            )
+                        )
                     }
                 } else {
                     null
                 },
                 if (isRecording) {
-                    {
-                        SaveRecordingButton {
-                            recorder.stop()
-                            recorder.reset()
-                            setIsRecording(false)
-                            showSaveCancel = false
-                            savedFilePath = filePath
-                            filePath =
-                                "${context.cacheDir.absolutePath}/recording_${System.currentTimeMillis()}.m4a"
-                        }
-                    }
+                    { SaveRecordingButton { saveRecording() } }
                 } else {
                     { DataButton(navController) }
                 },

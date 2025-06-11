@@ -33,14 +33,17 @@ import kotlinx.coroutines.delay
 import ubb.victors3136.epigraphmobile.ui.theme.ThemeProvider
 
 @Composable
-private fun rememberRecordingTimer(): MutableLongState {
+fun rememberRecordingTimer(onMaxReached: () -> Unit) : MutableLongState {
     val time = remember { mutableLongStateOf(0L) }
+
     LaunchedEffect(Unit) {
-        while (true) {
+        while (time.longValue < 30) {
             delay(1000L)
             time.longValue += 1
         }
+        onMaxReached()
     }
+
     return time
 }
 
@@ -102,8 +105,7 @@ fun SonogramBars() {
 
 
 @Composable
-fun RecordingAnimation() {
-    val duration by rememberRecordingTimer()
+fun RecordingAnimation(duration: Long) {
     Column(
         modifier = Modifier.Companion
             .fillMaxWidth()
