@@ -3,7 +3,6 @@ package ubb.victors3136.epigraphmobile.ui.screens
 import android.Manifest
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
-import android.provider.ContactsContract
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -67,7 +66,7 @@ fun AudioRecorderScreen(navController: NavHostController) {
                 if (permissionGranted) {
                     EpigraphTextBox(text = "Press the button below to transcribe :D")
                 } else {
-                    EpigraphErrorBox("You need to enable permissions to use this app");
+                    EpigraphErrorBox("You need to enable permissions to use this app")
                 }
                 Spacer(modifier = Modifier.Companion.weight(1f))
             }

@@ -10,7 +10,7 @@ import ubb.victors3136.epigraphmobile.ui.theme.ThemeProvider
 @Composable
 fun EpigraphErrorBox(
     text: String,
-    modifier: Modifier = Modifier.Companion,
+    modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyMedium){
     Text(
         text = text,
