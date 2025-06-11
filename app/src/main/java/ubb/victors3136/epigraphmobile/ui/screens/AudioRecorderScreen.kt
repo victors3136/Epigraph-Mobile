@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,13 +23,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.launch
+import ubb.victors3136.epigraphmobile.network.uploadRecording
 import ubb.victors3136.epigraphmobile.ui.buttons.DataButton
 import ubb.victors3136.epigraphmobile.ui.buttons.RecordAudioButton
-import ubb.victors3136.epigraphmobile.ui.buttons.SaveRecordingButton
+import ubb.victors3136.epigraphmobile.ui.buttons.SubmitRecordingButton
 import ubb.victors3136.epigraphmobile.ui.components.EpigraphErrorBox
 import ubb.victors3136.epigraphmobile.ui.components.EpigraphFooter
 import ubb.victors3136.epigraphmobile.ui.components.EpigraphHeader
 import ubb.victors3136.epigraphmobile.ui.components.EpigraphTextBox
+import kotlin.time.Duration
+
 
 @Composable
 fun AudioRecorderScreen(navController: NavHostController) {
@@ -50,6 +55,8 @@ fun AudioRecorderScreen(navController: NavHostController) {
         )
     }
     var savedFilePath by remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+
     fun saveRecording() {
         recorder.stop()
         recorder.reset()
@@ -58,11 +65,10 @@ fun AudioRecorderScreen(navController: NavHostController) {
         savedFilePath = filePath
         val relativePath = "recording_${System.currentTimeMillis()}.m4a"
         filePath = "${context.cacheDir.absolutePath}/$relativePath"
-        Toast.makeText(
-            context,
-            "$relativePath saved successfully!",
-            Toast.LENGTH_SHORT
-        ).show()
+        coroutineScope.launch {
+            Toast.makeText(context, uploadRecording(savedFilePath!!, context), Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     val duration by if (isRecording) {
@@ -115,7 +121,7 @@ fun AudioRecorderScreen(navController: NavHostController) {
                     null
                 },
                 if (isRecording) {
-                    { SaveRecordingButton { saveRecording() } }
+                    { SubmitRecordingButton { saveRecording() } }
                 } else {
                     { DataButton(navController) }
                 },
