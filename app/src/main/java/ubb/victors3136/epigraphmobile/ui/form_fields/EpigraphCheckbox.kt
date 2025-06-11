@@ -16,14 +16,16 @@ import ubb.victors3136.epigraphmobile.ui.components.EpigraphTextBox
 fun EpigraphCheckbox(
     checked: Boolean,
     label: String,
-    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    onChange: (Boolean) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.Companion.CenterVertically,
+        modifier = modifier
     ) {
         Checkbox(
             checked = checked,
-            onCheckedChange = onCheckedChange,
+            onCheckedChange = onChange,
             colors = CheckboxDefaults.colors(
                 checkedColor = ThemeProvider.get().primaryAccent(),
                 uncheckedColor = ThemeProvider.get().secondaryAccent(),
