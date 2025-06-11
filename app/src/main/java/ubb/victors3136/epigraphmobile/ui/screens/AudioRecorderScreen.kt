@@ -61,12 +61,12 @@ fun AudioRecorderScreen(navController: NavHostController) {
                     .fillMaxSize()
             ) {
                 Spacer(modifier = Modifier.Companion.height(16.dp))
-                EpigraphTextBox(text = "Welcome to Epigraph Mobile")
-
-                if (permissionGranted) {
+                if (!permissionGranted) {
+                    EpigraphErrorBox("You need to enable permissions to use this app")
+                } else if (!isRecording) {
                     EpigraphTextBox(text = "Press the button below to transcribe :D")
                 } else {
-                    EpigraphErrorBox("You need to enable permissions to use this app")
+                    RecordingAnimation()
                 }
                 Spacer(modifier = Modifier.Companion.weight(1f))
             }
@@ -81,10 +81,10 @@ fun AudioRecorderScreen(navController: NavHostController) {
                             isRecording = isRecording,
                             recorder = recorder,
                             savedFilePath = filePath,
-                            setSavedFilePath =  {newPath-> { savedFilePath = newPath }},
+                            setSavedFilePath = { newPath -> { savedFilePath = newPath } },
                             setRecordingState = setIsRecording,
 
-                        )
+                            )
                     }
                 } else {
                     null
