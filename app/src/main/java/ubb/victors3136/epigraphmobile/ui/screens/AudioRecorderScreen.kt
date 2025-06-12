@@ -21,10 +21,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
+import ubb.victors3136.epigraphmobile.R
+import ubb.victors3136.epigraphmobile.R.string
+import ubb.victors3136.epigraphmobile.R.string.*
 import ubb.victors3136.epigraphmobile.network.uploadRecording
 import ubb.victors3136.epigraphmobile.persistance.userDataStore
 import ubb.victors3136.epigraphmobile.ui.animations.LoadingAnimation
@@ -142,8 +146,11 @@ fun AudioRecorderScreen(navController: NavHostController) {
                         uploadResponse!!,
                         isError = uploadError
                     )
+
                     isRecording -> RecordingAnimation(duration)
-                    else -> EpigraphTextBox("Press the button below to transcribe :D")
+                    else -> EpigraphLargeTextBox(
+                        stringResource(default_welcome_message)
+                    )
                 }
                 Spacer(modifier = Modifier.Companion.weight(1f))
             }

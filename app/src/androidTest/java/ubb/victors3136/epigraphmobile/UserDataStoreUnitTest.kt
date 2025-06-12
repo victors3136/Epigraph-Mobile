@@ -56,21 +56,47 @@ class UserInfoUnitTest {
     }
 
     @Test
-    fun testAgeSavedCorrectly() = runTest {
+    fun testPositiveAgeSavedCorrectly() = runTest {
         saveUserInfo(dataStore, age = 42, gender = "", consent = false)
         val preferences = dataStore.data.first()
         assertEquals(42, preferences[UserMetadataKeys.AGE])
     }
 
     @Test
+    fun testZeroAgeSavedCorrectly() = runTest {
+        saveUserInfo(dataStore, age = 0, gender = "", consent = false)
+        val preferences = dataStore.data.first()
+        assertEquals(0, preferences[UserMetadataKeys.AGE])
+    }
+
+
+    @Test
+    fun testEmptyGenderSavedCorrectly() = runTest {
+        saveUserInfo(dataStore, age = 0, gender = "", consent = false)
+        val preferences = dataStore.data.first()
+        assertEquals("", preferences[UserMetadataKeys.GENDER])
+    }
+    @Test
     fun testGenderSavedCorrectly() = runTest {
         saveUserInfo(dataStore, age = 0, gender = "Other", consent = false)
         val preferences = dataStore.data.first()
         assertEquals("Other", preferences[UserMetadataKeys.GENDER])
     }
+    @Test
+    fun testPositiveConsentSavedCorrectly() = runTest {
+        saveUserInfo(dataStore, age = 0, gender = "", consent = true)
+        val preferences = dataStore.data.first()
+        assertEquals(true, preferences[UserMetadataKeys.CONSENT])
+    }
+    @Test
+    fun testNegativeConsentSavedCorrectly() = runTest {
+        saveUserInfo(dataStore, age = 0, gender = "Other", consent = false)
+        val preferences = dataStore.data.first()
+        assertEquals(false, preferences[UserMetadataKeys.CONSENT])
+    }
 
     @Test
-    fun testAgeLoadedCorrectly() = runTest {
+    fun testPositiveAgeLoadedCorrectly() = runTest {
         dataStore.edit { prefs ->
             prefs[UserMetadataKeys.AGE] = 25
         }
@@ -78,6 +104,17 @@ class UserInfoUnitTest {
         val (age, _, _) = loadUserInfo(dataStore)
         assertEquals(25, age)
     }
+
+    @Test
+    fun testZeroAgeLoadedCorrectly() = runTest {
+        dataStore.edit { prefs ->
+            prefs[UserMetadataKeys.AGE] = 0
+        }
+
+        val (age, _, _) = loadUserInfo(dataStore)
+        assertEquals(0, age)
+    }
+
 
     @Test
     fun testGenderLoadedCorrectly() = runTest {
@@ -90,12 +127,31 @@ class UserInfoUnitTest {
     }
 
     @Test
-    fun testConsentLoadedCorrectly() = runTest {
+    fun testEmptyGenderLoadedCorrectly() = runTest {
+        dataStore.edit { prefs ->
+            prefs[UserMetadataKeys.GENDER] = ""
+        }
+
+        val (_, gender, _) = loadUserInfo(dataStore)
+        assertEquals("", gender)
+    }
+
+    @Test
+    fun testPositiveConsentLoadedCorrectly() = runTest {
         dataStore.edit { prefs ->
             prefs[UserMetadataKeys.CONSENT] = true
         }
 
         val (_, _, consent) = loadUserInfo(dataStore)
         assertTrue(consent)
+    }
+    @Test
+    fun testNegativeConsentLoadedCorrectly() = runTest {
+        dataStore.edit { prefs ->
+            prefs[UserMetadataKeys.CONSENT] = false
+        }
+
+        val (_, _, consent) = loadUserInfo(dataStore)
+        assertTrue(!consent)
     }
 }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Epigraph Mobile</string>
+    <string name="default_welcome_message">Press the red button below to transcribe\n\nPress the button on top right to change the theme of the application\n\nPress the button on the bottom right to enter your data</string>
 </resources>
