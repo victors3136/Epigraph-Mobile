@@ -54,7 +54,7 @@ private fun formatTime(absoluteSecondCount: Long): String {
 
 @Composable
 fun SonogramBars() {
-    val barCount = 30
+    val barCount = 15
     val randomTargets = remember {
         List(barCount) {
             80f + (30..40).random()

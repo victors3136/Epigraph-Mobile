@@ -1,14 +1,12 @@
 package ubb.victors3136.epigraphmobile.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Colors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,8 +36,8 @@ fun EpigraphLargeTextBox(
     ) {
         Text(
             text = text,
-            color = if (isError) ThemeProvider.get().primaryText()
-            else ThemeProvider.get().redLike(),
+            color = if (isError) ThemeProvider.get().redLike()
+            else ThemeProvider.get().primaryText(),
             style = style.copy(fontSize = 22.sp),
         )
     }
