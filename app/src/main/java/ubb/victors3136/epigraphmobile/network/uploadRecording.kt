@@ -1,6 +1,8 @@
 package ubb.victors3136.epigraphmobile.network
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -12,8 +14,8 @@ import ubb.victors3136.epigraphmobile.logging.LoggingService
 import ubb.victors3136.epigraphmobile.persistance.loadUserInfo
 import java.io.File
 
-suspend fun uploadRecording(filePath: String, context: Context): String {
-    val (age, gender, consent) = loadUserInfo(context)
+suspend fun uploadRecording(filePath: String, dataStore: DataStore<Preferences>): String {
+    val (age, gender, consent) = loadUserInfo(dataStore)
 
     val client = OkHttpClient()
     val file = File(filePath)

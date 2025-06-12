@@ -1,5 +1,6 @@
 package ubb.victors3136.epigraphmobile.ui.screens
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,12 +23,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ubb.victors3136.epigraphmobile.persistance.loadUserInfo
 import ubb.victors3136.epigraphmobile.persistance.saveUserInfo
+import ubb.victors3136.epigraphmobile.persistance.userDataStore
 import ubb.victors3136.epigraphmobile.ui.buttons.BackButton
 import ubb.victors3136.epigraphmobile.ui.buttons.ConfirmButton
 import ubb.victors3136.epigraphmobile.ui.components.EpigraphFooter
@@ -48,7 +53,7 @@ fun UserInfoFormScreen(navController: NavHostController) {
 
     fun onSuccess(age: Int, gender: String, consent: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
-            saveUserInfo(context, age, gender, consent)
+            saveUserInfo(context.userDataStore, age, gender, consent)
         }
         Toast.makeText(context, "Data submitted!", Toast.LENGTH_SHORT).show()
         navController.popBackStack()
@@ -62,7 +67,7 @@ fun UserInfoFormScreen(navController: NavHostController) {
 
 
     suspend fun onInit() {
-        val (cachedAge, cachedGender, cachedConsent) = loadUserInfo(context)
+        val (cachedAge, cachedGender, cachedConsent) = loadUserInfo(context.userDataStore)
         age = cachedAge?.toString() ?: ""
         gender = cachedGender
         consent = cachedConsent

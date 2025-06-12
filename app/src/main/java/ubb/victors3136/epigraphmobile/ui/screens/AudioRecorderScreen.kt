@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import ubb.victors3136.epigraphmobile.network.uploadRecording
+import ubb.victors3136.epigraphmobile.persistance.userDataStore
 import ubb.victors3136.epigraphmobile.ui.animations.LoadingAnimation
 import ubb.victors3136.epigraphmobile.ui.animations.RecordingAnimation
 import ubb.victors3136.epigraphmobile.ui.animations.rememberRecordingTimer
@@ -102,7 +103,7 @@ fun AudioRecorderScreen(navController: NavHostController) {
         filePath = "${context.cacheDir.absolutePath}/$relativePath"
         coroutineScope.launch {
             setIsUploading(true)
-            val result = uploadRecording(savedFilePath!!, context)
+            val result = uploadRecording(savedFilePath!!, context.userDataStore)
             uploadResponse = result
             uploadError = result.startsWith("Error", ignoreCase = true)
             setIsUploading(false)
