@@ -14,8 +14,26 @@ import ubb.victors3136.epigraphmobile.logging.LoggingService
 import ubb.victors3136.epigraphmobile.persistance.loadUserInfo
 import java.io.File
 
-suspend fun uploadRecording(filePath: String, dataStore: DataStore<Preferences>): String {
+const val URL = "http://ec2-13-60-99-27.eu-north-1.compute.amazonaws.com:8000/upload-audio/"
+
+suspend fun buildBody(file: File, dataStore: DataStore<Preferences>): MultipartBody {
     val (age, gender, consent) = loadUserInfo(dataStore)
+    return MultipartBody.Builder().setType(MultipartBody.Companion.FORM)
+        .addFormDataPart("file", file.name, file.asRequestBody("audio/m4a".toMediaTypeOrNull()))
+        .addFormDataPart("age", age?.toString() ?: "null")
+        .addFormDataPart("gender", gender)
+        .addFormDataPart("consent", consent.toString())
+        .build()
+}
+
+fun buildRequest(requestBody: MultipartBody): Request =
+    Request.Builder()
+        .url(URL)
+        .post(requestBody)
+        .build()
+
+suspend fun uploadRecording(filePath: String, dataStore: DataStore<Preferences>): String {
+
 
     val client = OkHttpClient()
     val file = File(filePath)
@@ -23,19 +41,12 @@ suspend fun uploadRecording(filePath: String, dataStore: DataStore<Preferences>)
         LoggingService.error("Recording file does not exist")
         return "Recording file does not exist"
     }
-    val requestBody = MultipartBody.Builder().setType(MultipartBody.Companion.FORM)
-        .addFormDataPart("file", file.name, file.asRequestBody("audio/m4a".toMediaTypeOrNull()))
-        .addFormDataPart("age", age?.toString() ?: "null")
-        .addFormDataPart("gender", gender)
-        .addFormDataPart("consent", consent.toString())
-        .build()
+
+    val requestBody = buildBody(file, dataStore)
 
     LoggingService.info(requestBody.toString())
 
-    val request = Request.Builder()
-        .url("https://postman-echo.com/post")
-        .post(requestBody)
-        .build()
+    val request = buildRequest(requestBody)
 
     return withContext(Dispatchers.IO) {
         try {
