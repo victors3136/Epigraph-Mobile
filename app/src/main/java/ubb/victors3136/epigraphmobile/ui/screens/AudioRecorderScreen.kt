@@ -26,8 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import ubb.victors3136.epigraphmobile.R
-import ubb.victors3136.epigraphmobile.R.string
 import ubb.victors3136.epigraphmobile.R.string.*
 import ubb.victors3136.epigraphmobile.network.uploadRecording
 import ubb.victors3136.epigraphmobile.persistance.userDataStore
@@ -48,7 +46,7 @@ fun AudioRecorderScreen(navController: NavHostController) {
     val (isRecording, setIsRecording) = remember { mutableStateOf(false) }
     val (isUploading, setIsUploading) = remember { mutableStateOf(false) }
     var uploadResponse by remember { mutableStateOf<String?>(null) }
-    var uploadError by remember { mutableStateOf<Boolean>(false) }
+    var error by remember { mutableStateOf<Boolean>(false) }
 
     val context = LocalContext.current
     var recordingPermission by remember {
@@ -99,7 +97,7 @@ fun AudioRecorderScreen(navController: NavHostController) {
     fun saveRecording() {
         recorder.stop()
         recorder.reset()
-        uploadError = false
+        error = false
         uploadResponse = null
         setIsRecording(false)
         savedFilePath = filePath
@@ -109,9 +107,9 @@ fun AudioRecorderScreen(navController: NavHostController) {
             setIsUploading(true)
             try {
                 uploadResponse = uploadRecording(savedFilePath!!, context.userDataStore)
-                uploadError = false
+                error = false
             } catch(e: Exception){
-                uploadError = true
+                error = true
                 uploadResponse = e.message.toString()
             }
             setIsUploading(false)
@@ -148,7 +146,7 @@ fun AudioRecorderScreen(navController: NavHostController) {
                     isUploading -> LoadingAnimation()
                     uploadResponse != null -> EpigraphLargeTextBox(
                         uploadResponse!!,
-                        isError = uploadError
+                        isError = error
                     )
 
                     isRecording -> RecordingAnimation(duration)
@@ -161,31 +159,33 @@ fun AudioRecorderScreen(navController: NavHostController) {
 
         },
         bottomBar = {
-            EpigraphFooter(
-                if (recordingPermission) {
-                    {
-                        RecordAudioButton(
-                            context = context,
-                            isRecording = isRecording,
-                            recorder = recorder,
-                            savedFilePath = filePath,
-                            setSavedFilePath = { newPath -> { savedFilePath = newPath } },
-                            setRecordingState = setIsRecording,
-                            prepare = {
-                                uploadError = false
-                                uploadResponse = null
-                            }
-                        )
-                    }
-                } else {
-                    null
-                },
-                if (isRecording) {
-                    { SubmitRecordingButton { saveRecording() } }
-                } else {
-                    { DataButton(navController) }
-                },
-            )
+            if (!isUploading) {
+                EpigraphFooter(
+                    if (recordingPermission) {
+                        {
+                            RecordAudioButton(
+                                context = context,
+                                isRecording = isRecording,
+                                recorder = recorder,
+                                savedFilePath = filePath,
+                                setSavedFilePath = { newPath -> { savedFilePath = newPath } },
+                                setRecordingState = setIsRecording,
+                                prepare = {
+                                    error = false
+                                    uploadResponse = null
+                                }
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                    if (isRecording) {
+                        { SubmitRecordingButton { saveRecording() } }
+                    } else {
+                        { DataButton(navController) }
+                    },
+                )
+            }
         },
     )
 }
