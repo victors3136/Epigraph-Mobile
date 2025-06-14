@@ -1,6 +1,5 @@
 package ubb.victors3136.epigraphmobile.network
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.Dispatchers
@@ -49,12 +48,12 @@ suspend fun uploadRecording(filePath: String, dataStore: DataStore<Preferences>)
     val request = buildRequest(requestBody)
 
     return withContext(Dispatchers.IO) {
-        try {
-            client.newCall(request).execute().use { response ->
+        client.newCall(request).execute().use { response ->
+            if (response.isSuccessful) {
                 response.body?.string() ?: "No response body provided"
+            } else {
+                throw Exception(response.body?.string() ?: "No description provided")
             }
-        } catch (e: Exception) {
-            "Error: ${e.message}"
         }
     }
 }

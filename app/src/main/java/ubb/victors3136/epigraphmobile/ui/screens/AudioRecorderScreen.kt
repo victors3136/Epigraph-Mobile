@@ -107,9 +107,13 @@ fun AudioRecorderScreen(navController: NavHostController) {
         filePath = "${context.cacheDir.absolutePath}/$relativePath"
         coroutineScope.launch {
             setIsUploading(true)
-            val result = uploadRecording(savedFilePath!!, context.userDataStore)
-            uploadResponse = result
-            uploadError = result.startsWith("Error", ignoreCase = true)
+            try {
+                uploadResponse = uploadRecording(savedFilePath!!, context.userDataStore)
+                uploadError = false
+            } catch(e: Exception){
+                uploadError = true
+                uploadResponse = e.message.toString()
+            }
             setIsUploading(false)
         }
     }
