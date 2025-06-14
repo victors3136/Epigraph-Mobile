@@ -14,7 +14,7 @@ import ubb.victors3136.epigraphmobile.logging.LoggingService
 import ubb.victors3136.epigraphmobile.persistance.loadUserInfo
 import java.io.File
 
-const val URL = "http://ec2-13-60-99-27.eu-north-1.compute.amazonaws.com:8000/upload-audio/"
+const val URL = "http://ec2-13-60-99-27.eu-north-1.compute.amazonaws.com:8000/transcribe/"
 
 suspend fun buildBody(file: File, dataStore: DataStore<Preferences>): MultipartBody {
     val (age, gender, consent) = loadUserInfo(dataStore)
