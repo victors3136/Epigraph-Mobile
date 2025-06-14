@@ -12,6 +12,8 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import ubb.victors3136.epigraphmobile.logging.LoggingService
 import ubb.victors3136.epigraphmobile.persistance.loadUserInfo
 import java.io.File
+import java.util.concurrent.TimeUnit
+
 
 const val URL = "http://ec2-13-60-99-27.eu-north-1.compute.amazonaws.com:8000/transcribe/"
 
@@ -34,7 +36,11 @@ fun buildRequest(requestBody: MultipartBody): Request =
 suspend fun uploadRecording(filePath: String, dataStore: DataStore<Preferences>): String {
 
 
-    val client = OkHttpClient()
+    val client = OkHttpClient.Builder()
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .build()
     val file = File(filePath)
     if (!file.exists()) {
         LoggingService.error("Recording file does not exist")
